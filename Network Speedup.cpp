@@ -1,24 +1,29 @@
 #include <iostream>
+#include <iomanip>
 #include <queue>
 using namespace std;
 
 #define st first
 #define nd second
 #define int long long
-
+#define float long double
 struct q
 {
-    int v, d, num;
+    int v;
+    float d;
+int num;
     bool operator < (const q& o) const
     {
         return d > o.d;
     }
 };
 
-const int N = 1e5+5, INF = 1e18+9;
+const int N = 1e5+5;
+const float INF = 1e9+9;
 int n, m, dev, u, v, w;
+float pow[11] = {1, 2, 4,8,16,32,64,128,256,512,1024};
 vector<pair<int,int> > adj[N];
-int dist[N][20];
+float dist[N][20];
 priority_queue<q> pq;
 
 signed main()
@@ -38,7 +43,8 @@ signed main()
 
     while(!pq.empty())
     {
-        int u = pq.top().v, d = pq.top().d, num = pq.top().num;
+        int u = pq.top().v, num = pq.top().num;
+float d = pq.top().d;
         pq.pop();
         if (dist[u][num] != d)
             continue;
@@ -47,20 +53,13 @@ signed main()
             int v = p.st, w = p.nd;
             for (int j = num; j <= dev; j++) // j-num la so may dat o canh noi <u,v>
             {
-                if (dist[u][num] + (w>>(j-num)) < dist[v][j]) // w>>(j-num) <=> w*pow(2,num-j)
+                if (dist[u][num] + (1.0*w/pow[j-num]) < dist[v][j])
                 {
-                    dist[v][j] = dist[u][num]+(w>>(j-num));
+                    dist[v][j] = dist[u][num]+(1.0*w/pow[j-num]);
                     pq.push({v,dist[v][j],j});
                 }
             }
         }
     }
-    cout << dist[n][dev];
+    cout << fixed << setprecision(2) << dist[n][dev];
 }
-/*
-4 4 2
-1 2 16
-2 4 8
-1 3 1
-3 4 40
-*/
